@@ -6,8 +6,8 @@
 # ── Stage 1: Build widget ───────────────────────────────────────────────────
 FROM node:20-alpine AS widget-builder
 WORKDIR /widget
-COPY widget/package.json ./
-RUN npm install
+COPY widget/package.json widget/package-lock.json ./
+RUN npm ci
 COPY widget/ .
 RUN npm run build
 
