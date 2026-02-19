@@ -9,13 +9,13 @@ acidni-support v1.0.0
 """
 
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from api.config import get_settings
-from api.routes import health, support, widget
 
 __version__ = "1.0.0"
 
@@ -23,12 +23,34 @@ logger = logging.getLogger("acidni-support")
 
 settings = get_settings()
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Load secrets from Key Vault at startup."""
+    try:
+        from azure.identity import DefaultAzureCredential
+        from azure.keyvault.secrets import SecretClient
+
+        credential = DefaultAzureCredential()
+        kv_client = SecretClient(vault_url=settings.keyvault_url, credential=credential)
+        pat = kv_client.get_secret("azure-devops-pat").value
+        if pat:
+            settings.devops_pat = pat
+            logger.info("Loaded DevOps PAT from Key Vault")
+        else:
+            logger.warning("DevOps PAT not found in Key Vault")
+    except Exception as e:
+        logger.warning("Could not load secrets from Key Vault: %s", e)
+    yield
+
+
 app = FastAPI(
     title="Acidni Support API",
     description="Centralized support and feedback collection for all Acidni apps",
     version=__version__,
     docs_url="/docs" if settings.environment == "dev" else None,
     redoc_url=None,
+    lifespan=lifespan,
 )
 
 # -------------------------------------------------------------------
@@ -70,6 +92,8 @@ app.add_middleware(
 # -------------------------------------------------------------------
 # Routes
 # -------------------------------------------------------------------
+from api.routes import health, support, widget
+
 app.include_router(health.router)
 app.include_router(support.router, prefix="/api/support")
 app.include_router(widget.router, prefix="/api/support")
