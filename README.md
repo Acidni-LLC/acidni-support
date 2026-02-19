@@ -2,6 +2,8 @@
 
 Unified support and feedback module for all Acidni LLC products. Provides an embeddable web component widget that collects support requests and routes them to the correct Azure DevOps project.
 
+> **Integration Guide:** See [docs/integration-guide.md](docs/integration-guide.md) for full integration docs, widget attributes, API payloads, and framework examples.
+
 ## Architecture
 
 ```
@@ -10,9 +12,9 @@ Unified support and feedback module for all Acidni LLC products. Provides an emb
 │  Web Component  │     │  FastAPI + Python 3.12    │     │ Work Items   │
 │  Shadow DOM     │     │  Container App            │     └──────────────┘
 └─────────────────┘     │                           │     ┌──────────────┐
-                        │  POST /support/submit     │ ──▶ │ Cosmos DB    │
-                        │  GET  /support/config/:id │     │ Ticket Store │
-                        │  GET  /widget/widget.js   │     └──────────────┘
+                        │  POST /api/submit         │ ──▶ │ Cosmos DB    │
+                        │  GET  /api/config/:id     │     │ Ticket Store │
+                        │  GET  /api/widget.js      │     └──────────────┘
                         └─────────────────────────────┘
 ```
 
@@ -23,9 +25,9 @@ Unified support and feedback module for all Acidni LLC products. Provides an emb
 ```html
 <acidni-support
   app-id="terprint-web"
-  api-url="https://apim-terprint-dev.azure-api.net/support">
+  api-url="https://apim-terprint-dev.azure-api.net/support/api">
 </acidni-support>
-<script src="https://support.acidni.net/widget/widget.js"></script>
+<script src="https://support.acidni.net/api/widget.js"></script>
 ```
 
 ### Local Development
@@ -53,41 +55,52 @@ uvicorn api.main:app --reload --port 8000
 
 **Blazor Server (.NET)**
 ```html
-<script src="https://support.acidni.net/widget/widget.js"></script>
-<acidni-support app-id="terprint-web"></acidni-support>
+<script src="https://support.acidni.net/api/widget.js"></script>
+<acidni-support app-id="terprint-web"
+  api-url="https://apim-terprint-dev.azure-api.net/support/api">
+</acidni-support>
 ```
 
 **React/Next.js**
 ```tsx
 useEffect(() => {
   const script = document.createElement('script');
-  script.src = 'https://support.acidni.net/widget/widget.js';
+  script.src = 'https://support.acidni.net/api/widget.js';
   document.body.appendChild(script);
 }, []);
-return <acidni-support app-id="gridsight" />;
+return (
+  <acidni-support
+    app-id="gridsight"
+    api-url="https://apim-terprint-dev.azure-api.net/support/api"
+  />
+);
 ```
 
 **Static HTML**
 ```html
-<acidni-support app-id="solar" position="bottom-left"></acidni-support>
-<script src="https://support.acidni.net/widget/widget.js"></script>
+<acidni-support app-id="solar" position="bottom-left"
+  api-url="https://apim-terprint-dev.azure-api.net/support/api">
+</acidni-support>
+<script src="https://support.acidni.net/api/widget.js"></script>
 ```
 
 **Teams Tab (iframe)**
 ```html
-<iframe src="https://support.acidni.net/widget/embed?app-id=acidni-sdo"
+<iframe src="https://support.acidni.net/api/embed?app-id=acidni-sdo"
         width="400" height="600" frameBorder="0"></iframe>
 ```
 
 ## API Endpoints
 
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/support/submit` | Submit a support request |
-| GET | `/support/config/{app_id}` | Get widget config for an app |
-| GET | `/widget/widget.js` | Serve widget JS bundle |
-| GET | `/widget/embed` | Embeddable HTML page |
-| GET | `/health` | Health check |
+All API paths are relative to the base URL. Through APIM prefix `/support`:
+
+| Method | Path | APIM URL | Description |
+|--------|------|----------|-------------|
+| POST | `/api/submit` | `/support/api/submit` | Submit a support request |
+| GET | `/api/config/{app_id}` | `/support/api/config/{app_id}` | Get widget config for an app |
+| GET | `/api/widget.js` | `/support/api/widget.js` | Serve widget JS bundle |
+| GET | `/api/embed` | `/support/api/embed` | Embeddable HTML page |
+| GET | `/health` | `/support/health` | Health check |
 
 ## Project Structure
 

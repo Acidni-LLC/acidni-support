@@ -2,8 +2,10 @@
  * acidni-support-widget — Embeddable support web component.
  *
  * Usage:
- *   <acidni-support app-id="terprint-web" api-url="https://apim-terprint-dev.azure-api.net/support"></acidni-support>
- *   <script src="https://support.acidni.net/widget/widget.js"></script>
+ *   <acidni-support app-id="terprint-web" api-url="https://apim-terprint-dev.azure-api.net/support/api"></acidni-support>
+ *   <script src="https://support.acidni.net/api/widget.js"></script>
+ *
+ * See docs/integration-guide.md for full integration documentation.
  */
 
 import { WIDGET_STYLES } from "./styles";
@@ -43,7 +45,7 @@ class AcidniSupportWidget extends HTMLElement {
     this.appId = this.getAttribute("app-id") || "";
     this.apiUrl =
       this.getAttribute("api-url") ||
-      "https://apim-terprint-dev.azure-api.net/support";
+      "https://apim-terprint-dev.azure-api.net/support/api";
     this.position = this.getAttribute("position") || "bottom-right";
     this.render();
     this.loadConfig();
