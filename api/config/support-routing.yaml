@@ -135,14 +135,20 @@ routes:
     devops_project: StepSafe AI
     area_path: "StepSafe AI"
 
+  # ── Acidni Support (self) ──────────────────────────────────────────────────
+  - app_id: acidni-support
+    app_name: Acidni Support
+    devops_project: Terprint
+    area_path: "Terprint"
+
   # ── Infrastructure (internal) ─────────────────────────────────────────────
   - app_id: infrastructure
     app_name: Infrastructure
-    devops_project: Infrastructure
-    area_path: "Infrastructure"
+    devops_project: Terprint
+    area_path: "Terprint"
 
   # ── Default fallback ──────────────────────────────────────────────────────
   - app_id: _default
-    app_name: Acidni Support
-    devops_project: Infrastructure
-    area_path: "Infrastructure"
+    app_name: General Support
+    devops_project: Terprint
+    area_path: "Terprint"
