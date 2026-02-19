@@ -1,7 +1,6 @@
 .git
 .github
 .env*
-*.md
 tests/
 widget/node_modules/
 widget/src/

@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy API source (needed for pip install)
-COPY pyproject.toml ./
+COPY pyproject.toml README.md ./
 COPY api/ ./api/
 
 # Install Python deps
