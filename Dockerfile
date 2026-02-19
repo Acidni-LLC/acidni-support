@@ -6,8 +6,8 @@
 # ── Stage 1: Build widget ───────────────────────────────────────────────────
 FROM node:20-alpine AS widget-builder
 WORKDIR /widget
-COPY widget/package.json widget/package-lock.json* ./
-RUN npm ci --ignore-scripts 2>/dev/null || npm install
+COPY widget/package.json ./
+RUN npm install
 COPY widget/ .
 RUN npm run build
 
@@ -21,12 +21,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python deps
+# Copy API source first (needed for pip install)
 COPY pyproject.toml ./
-RUN pip install --no-cache-dir -e .
-
-# Copy API source
 COPY api/ ./api/
+
+# Install Python deps
+RUN pip install --no-cache-dir .
 
 # Copy built widget
 COPY --from=widget-builder /widget/dist ./widget/dist
