@@ -22,6 +22,7 @@ dependencies = [
     "bleach>=6.2.0",
     "python-multipart>=0.0.18",
     "applicationinsights>=0.11.10",
+    "aiohttp>=3.11.0",
 ]
 
 [project.optional-dependencies]
