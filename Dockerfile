@@ -1,18 +1,8 @@
 # =============================================================================
-# acidni-support — Multi-stage Docker build
-# Stage 1: Build widget JS, Stage 2: Python API
+# acidni-support — Python API with pre-built widget
+# Widget JS is built locally and committed to widget/dist/
 # =============================================================================
-
-# ── Stage 1: Build widget ───────────────────────────────────────────────────
-FROM node:20-alpine AS widget-builder
-WORKDIR /widget
-COPY widget/package.json widget/package-lock.json ./
-RUN npm ci
-COPY widget/ .
-RUN npm run build
-
-# ── Stage 2: Python API ────────────────────────────────────────────────────
-FROM python:3.12-slim AS runtime
+FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -21,15 +11,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy API source first (needed for pip install)
+# Copy API source (needed for pip install)
 COPY pyproject.toml ./
 COPY api/ ./api/
 
 # Install Python deps
 RUN pip install --no-cache-dir .
 
-# Copy built widget
-COPY --from=widget-builder /widget/dist ./widget/dist
+# Copy pre-built widget JS
+COPY widget/dist ./widget/dist
 
 # Create non-root user
 RUN groupadd -r appuser && useradd -r -g appuser -d /app appuser
