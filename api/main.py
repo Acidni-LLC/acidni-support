@@ -95,8 +95,8 @@ app.add_middleware(
 from api.routes import health, support, widget
 
 app.include_router(health.router)
-app.include_router(support.router, prefix="/api/support")
-app.include_router(widget.router, prefix="/api/support")
+app.include_router(support.router, prefix="/api")
+app.include_router(widget.router, prefix="/api")
 
 
 @app.exception_handler(Exception)
