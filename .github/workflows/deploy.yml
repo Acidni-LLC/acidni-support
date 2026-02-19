@@ -1,0 +1,68 @@
+# =============================================================================
+# acidni-support CI/CD — Build, push to ACR, deploy to Container App
+# =============================================================================
+name: Deploy acidni-support
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ACR_NAME: crterprint
+  ACR_LOGIN: crterprint.azurecr.io
+  IMAGE_NAME: acidni-support
+  CONTAINER_APP: ca-acidni-support
+  RESOURCE_GROUP: rg-dev-terprint-ca
+  AZURE_SUBSCRIPTION: bb40fccf-9ffa-4bad-b9c0-ea40e326882c
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION }}
+
+      - name: Login to ACR
+        run: az acr login --name ${{ env.ACR_NAME }}
+
+      - name: Build image tag
+        id: tag
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          TAG="dev-${SHORT_SHA}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "full_image=${{ env.ACR_LOGIN }}/${{ env.IMAGE_NAME }}:${TAG}" >> $GITHUB_OUTPUT
+
+      - name: Build and push
+        run: |
+          docker build -t ${{ steps.tag.outputs.full_image }} .
+          docker push ${{ steps.tag.outputs.full_image }}
+
+      - name: Deploy to Container App
+        run: |
+          az containerapp update \
+            --name ${{ env.CONTAINER_APP }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --image ${{ steps.tag.outputs.full_image }}
+
+      - name: Verify health
+        run: |
+          sleep 15
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            https://ca-acidni-support.kindmoss-c6723cbe.eastus2.azurecontainerapps.io/health)
+          echo "Health check: HTTP $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::warning::Health check returned $HTTP_CODE"
+          fi

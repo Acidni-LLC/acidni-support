@@ -1,0 +1,148 @@
+# =============================================================================
+# acidni-support routing configuration
+# Maps app_id values to Azure DevOps projects and area paths
+# =============================================================================
+# Each route defines:
+#   app_id        - unique identifier used by the widget (matches product_code)
+#   app_name      - display name shown in the widget
+#   devops_project - Azure DevOps project name
+#   area_path     - DevOps area path for work item routing
+# =============================================================================
+
+routes:
+  # ── Terprint Platform ─────────────────────────────────────────────────────
+  - app_id: terprint-web
+    app_name: Terprint
+    devops_project: Terprint
+    area_path: "Terprint\\Web"
+
+  - app_id: terprint-ai-chat
+    app_name: Terprint AI Chat
+    devops_project: Terprint
+    area_path: "Terprint\\AI Services\\Chat"
+
+  - app_id: terprint-ai-recommender
+    app_name: Terprint AI Recommender
+    devops_project: Terprint
+    area_path: "Terprint\\AI Services\\Recommender"
+
+  - app_id: terprint-ai-deals
+    app_name: Terprint AI Deals
+    devops_project: Terprint
+    area_path: "Terprint\\AI Services"
+
+  - app_id: terprint-ai-lab
+    app_name: Terprint AI Lab
+    devops_project: Terprint
+    area_path: "Terprint\\AI Services"
+
+  - app_id: terprint-ai-health
+    app_name: Terprint AI Health
+    devops_project: Terprint
+    area_path: "Terprint\\AI Services"
+
+  - app_id: terprint-doctor-portal
+    app_name: Terprint Doctor Portal
+    devops_project: Terprint
+    area_path: "Terprint\\Web"
+
+  # ── CDES ──────────────────────────────────────────────────────────────────
+  - app_id: cdes
+    app_name: CDES
+    devops_project: CDES
+    area_path: "CDES"
+
+  # ── AI SDO ────────────────────────────────────────────────────────────────
+  - app_id: acidni-sdo
+    app_name: AI SDO
+    devops_project: Acidni-SDO
+    area_path: "Acidni-SDO"
+
+  - app_id: acidni-repolens
+    app_name: RepoLens
+    devops_project: Acidni-SDO
+    area_path: "Acidni-SDO"
+
+  # ── Florida Wetlands ──────────────────────────────────────────────────────
+  - app_id: fl-wetlands
+    app_name: FL Wetlands Monitor
+    devops_project: FLWetlands
+    area_path: "FLWetlands"
+
+  # ── Solar Reporting ───────────────────────────────────────────────────────
+  - app_id: solar
+    app_name: Solar Portal
+    devops_project: SolarReporting
+    area_path: "SolarReporting"
+
+  # ── Donate ────────────────────────────────────────────────────────────────
+  - app_id: donate
+    app_name: Donate
+    devops_project: Donate
+    area_path: "Donate"
+
+  # ── ChatAnalyzer ──────────────────────────────────────────────────────────
+  - app_id: chat-analyzer
+    app_name: ChatAnalyzer
+    devops_project: ChatAnalyzer
+    area_path: "ChatAnalyzer"
+
+  # ── TextATruck ────────────────────────────────────────────────────────────
+  - app_id: text-a-truck
+    app_name: Text A Truck
+    devops_project: TextATruck
+    area_path: "TextATruck"
+
+  # ── VeteransBuild ─────────────────────────────────────────────────────────
+  - app_id: veterans-build
+    app_name: VeteransBuild
+    devops_project: VeteransBuild
+    area_path: "VeteransBuild"
+
+  # ── GridSight ─────────────────────────────────────────────────────────────
+  - app_id: gridsight
+    app_name: GridSight
+    devops_project: GridSight
+    area_path: "GridSight"
+
+  # ── MobileMech ────────────────────────────────────────────────────────────
+  - app_id: mobilemech
+    app_name: MobileMech
+    devops_project: MobileMech
+    area_path: "MobileMech"
+
+  # ── Minecraft ─────────────────────────────────────────────────────────────
+  - app_id: minecraft
+    app_name: Minecraft Server
+    devops_project: Minecraft
+    area_path: "Minecraft"
+
+  # ── DevTools ──────────────────────────────────────────────────────────────
+  - app_id: devtools
+    app_name: DevTools
+    devops_project: DevTools
+    area_path: "DevTools"
+
+  # ── GoWild Finder ─────────────────────────────────────────────────────────
+  - app_id: gowild-finder
+    app_name: GoWild Finder
+    devops_project: GoWild Finder
+    area_path: "GoWild Finder"
+
+  # ── StepSafe AI ───────────────────────────────────────────────────────────
+  - app_id: stepsafe
+    app_name: StepSafe AI
+    devops_project: StepSafe AI
+    area_path: "StepSafe AI"
+
+  # ── Infrastructure (internal) ─────────────────────────────────────────────
+  - app_id: infrastructure
+    app_name: Infrastructure
+    devops_project: Infrastructure
+    area_path: "Infrastructure"
+
+  # ── Default fallback ──────────────────────────────────────────────────────
+  - app_id: _default
+    app_name: Acidni Support
+    devops_project: Infrastructure
+    area_path: "Infrastructure"

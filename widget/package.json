@@ -1,0 +1,17 @@
+{
+  "name": "acidni-support-widget",
+  "version": "1.0.0",
+  "description": "Embeddable support widget web component for Acidni LLC products",
+  "main": "dist/acidni-support-widget.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^4.22.0",
+    "tslib": "^2.7.0",
+    "typescript": "^5.6.0"
+  }
+}
