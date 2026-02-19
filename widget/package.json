@@ -4,8 +4,8 @@
   "description": "Embeddable support widget web component for Acidni LLC products",
   "main": "dist/acidni-support-widget.js",
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "build": "npx rollup -c",
+    "dev": "npx rollup -c -w"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
