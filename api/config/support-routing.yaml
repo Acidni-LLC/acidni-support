@@ -11,7 +11,7 @@
 
 routes:
   # ── Terprint Platform ─────────────────────────────────────────────────────
-  - app_id: terprint-web
+  - app_id: terprint
     app_name: Terprint
     devops_project: Terprint
     area_path: "Terprint\\Web"
@@ -58,13 +58,13 @@ routes:
     devops_project: Acidni-SDO
     area_path: "Acidni-SDO"
 
-  - app_id: acidni-repolens
+  - app_id: repolens
     app_name: RepoLens
     devops_project: Acidni-SDO
     area_path: "Acidni-SDO"
 
   # ── Florida Wetlands ──────────────────────────────────────────────────────
-  - app_id: fl-wetlands
+  - app_id: fl-wetlands-mapper
     app_name: FL Wetlands Monitor
     devops_project: FLWetlands
     area_path: "FLWetlands"
@@ -76,25 +76,25 @@ routes:
     area_path: "SolarReporting"
 
   # ── Donate ────────────────────────────────────────────────────────────────
-  - app_id: donate
+  - app_id: acidni-donate
     app_name: Donate
     devops_project: Donate
     area_path: "Donate"
 
   # ── ChatAnalyzer ──────────────────────────────────────────────────────────
-  - app_id: chat-analyzer
+  - app_id: github-chat-cost-analyzer
     app_name: ChatAnalyzer
     devops_project: ChatAnalyzer
     area_path: "ChatAnalyzer"
 
   # ── TextATruck ────────────────────────────────────────────────────────────
-  - app_id: text-a-truck
+  - app_id: textatruck
     app_name: Text A Truck
     devops_project: TextATruck
     area_path: "TextATruck"
 
   # ── VeteransBuild ─────────────────────────────────────────────────────────
-  - app_id: veterans-build
+  - app_id: veterans-building-solutions
     app_name: VeteransBuild
     devops_project: VeteransBuild
     area_path: "VeteransBuild"
@@ -130,7 +130,7 @@ routes:
     area_path: "GoWild Finder"
 
   # ── StepSafe AI ───────────────────────────────────────────────────────────
-  - app_id: stepsafe
+  - app_id: stepsafe-ai
     app_name: StepSafe AI
     devops_project: StepSafe AI
     area_path: "StepSafe AI"
