@@ -56,9 +56,12 @@ async def serve_widget_css() -> FileResponse:
     )
 
 
-@router.get("/embed", response_class=HTMLResponse)
+@router.get("/widget/embed", response_class=HTMLResponse)
 async def widget_embed_page(app_id: str = "acidni-support-embed") -> HTMLResponse:
     """Return minimal HTML page embedding the widget — useful for iframes in Teams.
+
+    Teams static tabs load this page via:
+        https://support.acidni.net/api/widget/embed?app_id=<app_id>
 
     Query params:
         app_id: The application identifier for support ticket routing (e.g. 'acidni-sdo', 'terprint-web').
@@ -75,7 +78,7 @@ async def widget_embed_page(app_id: str = "acidni-support-embed") -> HTMLRespons
 </head>
 <body>
     <acidni-support app-id="{app_id}" position="inline"></acidni-support>
-    <script src="/widget/widget.js"></script>
+    <script src="/api/widget.js"></script>
 </body>
 </html>"""
     return HTMLResponse(content=html)
