@@ -77,7 +77,7 @@ async def widget_embed_page(app_id: str = "acidni-support-embed") -> HTMLRespons
     </style>
 </head>
 <body>
-    <acidni-support app-id="{app_id}" position="inline"></acidni-support>
+    <acidni-support app-id="{app_id}" api-url="https://support.acidni.net/api" position="inline"></acidni-support>
     <script src="/api/widget.js"></script>
 </body>
 </html>"""
