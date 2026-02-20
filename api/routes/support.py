@@ -220,3 +220,34 @@ async def get_widget_config(app_id: str) -> WidgetConfig:
         devops_project=route["devops_project"],
         area_path=route.get("area_path", route["devops_project"]),
     )
+
+
+@router.get("/tickets")
+async def list_user_tickets(
+    app_id: str | None = None,
+    email: str | None = None,
+    limit: int = 25,
+) -> list[dict]:
+    """List past support tickets for a user/app, most recent first.
+
+    Query params:
+        app_id: Filter by application
+        email:  Filter by submitter email
+        limit:  Max results (default 25)
+    """
+    cosmos = _get_cosmos()
+    tickets = await cosmos.list_tickets(app_id=app_id, user_email=email, limit=limit)
+    # Return only safe fields (strip internal partition keys etc.)
+    return [
+        {
+            "ticket_id": t["id"],
+            "app_id": t.get("app_id"),
+            "category": t.get("category"),
+            "subject": t.get("subject"),
+            "status": t.get("status", "created"),
+            "priority": t.get("priority"),
+            "created_at": t.get("created_at"),
+            "devops_work_item_id": t.get("devops", {}).get("work_item_id") if t.get("devops") else None,
+        }
+        for t in tickets
+    ]

@@ -130,6 +130,120 @@ export const WIDGET_STYLES = `
     color: var(--text-secondary);
     padding: 20px 0;
   }
+  .error-msg {
+    text-align: center;
+    color: #dc2626;
+    padding: 16px 0;
+    font-size: 13px;
+  }
+  .empty-msg {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 24px 0;
+    font-size: 13px;
+  }
+
+  /* ── Context Bar (app name, user greeting) ──────────────────── */
+  .context-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+  .context-app { font-weight: 500; color: var(--text); }
+  .context-user { color: var(--primary); font-weight: 500; }
+  .context-cat {
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  /* ── Past Requests Link ─────────────────────────────────────── */
+  .past-requests-link {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .link-btn {
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .link-btn:hover { background: var(--bg-secondary); }
+
+  /* ── Past Requests List ─────────────────────────────────────── */
+  .past-requests {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+  }
+  .tickets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ticket-row {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    transition: border-color 0.15s;
+  }
+  .ticket-row:hover { border-color: var(--primary); }
+  .ticket-main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .ticket-status { font-size: 14px; }
+  .ticket-subject {
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ticket-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .ticket-id-label { font-family: monospace; }
+  .ticket-priority {
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .ticket-priority.critical { background: #fef2f2; color: #dc2626; }
+  .ticket-priority.high { background: #fff7ed; color: #ea580c; }
+  .ticket-priority.normal { background: #f0f9ff; color: #2563eb; }
+  .ticket-priority.low { background: #f9fafb; color: #6b7280; }
+  .ticket-date { color: var(--text-secondary); }
 
   /* ── Form ───────────────────────────────────────────────────── */
   .support-form { display: flex; flex-direction: column; gap: 14px; }
@@ -139,6 +253,7 @@ export const WIDGET_STYLES = `
     font-weight: 500;
     color: var(--text-secondary);
   }
+  .required { color: #dc2626; }
   .field input,
   .field textarea,
   .field select {
@@ -156,6 +271,15 @@ export const WIDGET_STYLES = `
   .field textarea:focus,
   .field select:focus {
     border-color: var(--primary);
+  }
+  .field input.invalid,
+  .field textarea.invalid {
+    border-color: #dc2626;
+  }
+  .field-error {
+    font-size: 12px;
+    color: #dc2626;
+    min-height: 16px;
   }
   .field textarea { resize: vertical; min-height: 80px; }
 

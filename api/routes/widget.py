@@ -57,15 +57,28 @@ async def serve_widget_css() -> FileResponse:
 
 
 @router.get("/widget/embed", response_class=HTMLResponse)
-async def widget_embed_page(app_id: str = "acidni-support-embed") -> HTMLResponse:
+async def widget_embed_page(
+    app_id: str = "acidni-support-embed",
+    user_email: str | None = None,
+    user_name: str | None = None,
+) -> HTMLResponse:
     """Return minimal HTML page embedding the widget — useful for iframes in Teams.
 
     Teams static tabs load this page via:
         https://support.acidni.net/api/widget/embed?app_id=<app_id>
 
     Query params:
-        app_id: The application identifier for support ticket routing (e.g. 'acidni-sdo', 'terprint-web').
+        app_id:     The application identifier for support ticket routing.
+        user_email: Pre-populate with the user's email address.
+        user_name:  Pre-populate with the user's display name.
     """
+    # Build optional data attributes for pre-population
+    extra_attrs = ""
+    if user_email:
+        extra_attrs += f' user-email="{user_email}"'
+    if user_name:
+        extra_attrs += f' user-name="{user_name}"'
+
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,7 +90,7 @@ async def widget_embed_page(app_id: str = "acidni-support-embed") -> HTMLRespons
     </style>
 </head>
 <body>
-    <acidni-support app-id="{app_id}" api-url="https://support.acidni.net/api" position="inline"></acidni-support>
+    <acidni-support app-id="{app_id}" api-url="https://support.acidni.net/api" position="inline"{extra_attrs}></acidni-support>
     <script src="/api/widget.js"></script>
 </body>
 </html>"""
