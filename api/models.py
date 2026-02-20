@@ -27,6 +27,19 @@ class SubmitContext(BaseModel):
     app_version: str | None = None
 
 
+class LicenseInfo(BaseModel):
+    """License and support plan information attached to a support request."""
+
+    has_license: bool = False
+    plan_name: str | None = None
+    plan_id: str | None = None
+    status: str | None = None
+    is_free_trial: bool = False
+    free_trial_end: str | None = None
+    has_priority_support: bool = False
+    support_plan: str | None = None
+
+
 class SupportSubmitRequest(BaseModel):
     """Incoming support/feedback request from the widget."""
 
@@ -38,6 +51,7 @@ class SupportSubmitRequest(BaseModel):
     user_email: str | None = Field(default=None, description="Submitter email")
     user_name: str | None = Field(default=None, description="Submitter name")
     context: SubmitContext | None = Field(default=None, description="Auto-captured context")
+    license_info: LicenseInfo | None = Field(default=None, description="License and support plan info")
     screenshot_base64: str | None = Field(default=None, max_length=7_000_000, description="Optional screenshot")
 
 
@@ -74,6 +88,7 @@ class TicketDocument(BaseModel):
     user_email: str | None = None
     user_name: str | None = None
     context: SubmitContext | None = None
+    license_info: LicenseInfo | None = None
     devops: DevOpsInfo | None = None
     created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat() + "Z")
     updated_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat() + "Z")

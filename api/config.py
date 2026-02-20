@@ -33,6 +33,7 @@ class Settings(BaseSettings):
 
     # APIM
     apim_base_url: str = "https://apim-terprint-dev.azure-api.net"
+    apim_subscription_key: str = ""  # Ocp-Apim-Subscription-Key for marketplace API calls
 
     # Notifications
     notifications_enabled: bool = True

@@ -42,9 +42,28 @@ interface TicketSummary {
   devops_work_item_id: number | null;
 }
 
+interface LicenseInfo {
+  has_license: boolean;
+  plan_name: string | null;
+  plan_id: string | null;
+  status: string | null;
+  is_free_trial: boolean;
+  free_trial_end: string | null;
+  has_priority_support: boolean;
+  support_plan: string | null;
+  subscriptions: Array<{
+    offer_id: string;
+    plan_id: string | null;
+    plan_name: string | null;
+    status: string;
+    is_free_trial: boolean;
+  }>;
+}
+
 class AcidniSupportWidget extends HTMLElement {
   private shadow: ShadowRoot;
   private config: WidgetConfig | null = null;
+  private licenseInfo: LicenseInfo | null = null;
   private isOpen = false;
   private apiUrl = "";
   private appId = "";
@@ -88,13 +107,26 @@ class AcidniSupportWidget extends HTMLElement {
   private async loadConfig(): Promise<void> {
     if (!this.appId) return;
     try {
-      const res = await fetch(`${this.apiUrl}/config/${this.appId}`);
-      if (res.ok) {
-        this.config = await res.json();
-        this.renderHome();
+      // Fetch config and license info in parallel
+      const configPromise = fetch(`${this.apiUrl}/config/${this.appId}`);
+      const licensePromise = this.userEmail
+        ? fetch(`${this.apiUrl}/license-info?email=${encodeURIComponent(this.userEmail)}`)
+        : Promise.resolve(null);
+
+      const [configRes, licenseRes] = await Promise.all([configPromise, licensePromise]);
+
+      if (configRes.ok) {
+        this.config = await configRes.json();
       } else {
         this.renderError("Could not load support configuration.");
+        return;
       }
+
+      if (licenseRes && licenseRes.ok) {
+        this.licenseInfo = await licenseRes.json();
+      }
+
+      this.renderHome();
     } catch (e) {
       console.warn("[acidni-support] Failed to load config:", e);
       this.renderError("Could not connect to support service.");
@@ -150,6 +182,30 @@ class AcidniSupportWidget extends HTMLElement {
     const appName = this.config.app_name || this.appId;
     const greeting = this.userName ? `Hi ${this.userName}!` : "";
 
+    // Build license badge HTML
+    let licenseBadge = "";
+    if (this.licenseInfo) {
+      const lic = this.licenseInfo;
+      if (lic.has_license && lic.plan_name) {
+        const trialTag = lic.is_free_trial ? ' <span class="badge trial">Trial</span>' : "";
+        licenseBadge = `<span class="license-badge active">📄 ${this.escapeHtml(lic.plan_name)}${trialTag}</span>`;
+      } else {
+        licenseBadge = '<span class="license-badge none">No active license</span>';
+      }
+    }
+
+    let supportBadge = "";
+    if (this.licenseInfo) {
+      const lic = this.licenseInfo;
+      if (lic.support_plan) {
+        supportBadge = `<span class="support-badge priority">⭐ ${this.escapeHtml(lic.support_plan)}</span>`;
+      } else if (lic.has_priority_support) {
+        supportBadge = '<span class="support-badge priority">⭐ Priority Support</span>';
+      } else if (lic.has_license) {
+        supportBadge = '<span class="support-badge standard">Standard Support</span>';
+      }
+    }
+
     const cats = this.config.categories;
     const catButtons = cats
       .map(
@@ -168,6 +224,7 @@ class AcidniSupportWidget extends HTMLElement {
           <span class="context-app">📱 ${appName}</span>
           ${greeting ? `<span class="context-user">${greeting}</span>` : ""}
         </div>
+        ${licenseBadge || supportBadge ? `<div class="license-bar">${licenseBadge}${supportBadge}</div>` : ""}
         <div class="categories" id="categories">
           ${catButtons}
         </div>
@@ -195,6 +252,18 @@ class AcidniSupportWidget extends HTMLElement {
     const catLabel =
       this.config?.categories.find((c) => c.id === categoryId)?.label || categoryId;
 
+    // Build license line for the form context
+    let formLicenseHtml = "";
+    if (this.licenseInfo && this.licenseInfo.has_license && this.licenseInfo.plan_name) {
+      const planLabel = this.escapeHtml(this.licenseInfo.plan_name);
+      const supportLabel = this.licenseInfo.support_plan
+        ? this.escapeHtml(this.licenseInfo.support_plan)
+        : this.licenseInfo.has_priority_support
+          ? "Priority Support"
+          : "Standard Support";
+      formLicenseHtml = `<div class="license-bar compact"><span class="license-badge active">📄 ${planLabel}</span><span class="support-badge ${this.licenseInfo.has_priority_support ? 'priority' : 'standard'}">${supportLabel}</span></div>`;
+    }
+
     body.innerHTML = `
       <form id="support-form" class="support-form" novalidate>
         <input type="hidden" name="category" value="${categoryId}" />
@@ -203,6 +272,7 @@ class AcidniSupportWidget extends HTMLElement {
           <span class="context-app">📱 ${this.config?.app_name || this.appId}</span>
           <span class="context-cat">${catLabel}</span>
         </div>
+        ${formLicenseHtml}
 
         <div class="field">
           <label for="subject">Subject <span class="required">*</span></label>
@@ -313,6 +383,18 @@ class AcidniSupportWidget extends HTMLElement {
         browser: navigator.userAgent,
         screen_resolution: `${window.screen.width}x${window.screen.height}`,
       },
+      license_info: this.licenseInfo
+        ? {
+            has_license: this.licenseInfo.has_license,
+            plan_name: this.licenseInfo.plan_name,
+            plan_id: this.licenseInfo.plan_id,
+            status: this.licenseInfo.status,
+            is_free_trial: this.licenseInfo.is_free_trial,
+            free_trial_end: this.licenseInfo.free_trial_end,
+            has_priority_support: this.licenseInfo.has_priority_support,
+            support_plan: this.licenseInfo.support_plan,
+          }
+        : undefined,
     };
 
     try {

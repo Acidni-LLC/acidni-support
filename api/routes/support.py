@@ -19,6 +19,7 @@ from api.models import (
 )
 from api.services.cosmos_service import CosmosService
 from api.services.devops_client import DevOpsClient
+from api.services.licensing_service import LicensingService
 from api.services.routing_service import RoutingService
 
 logger = logging.getLogger("acidni-support.routes.support")
@@ -29,6 +30,7 @@ router = APIRouter(tags=["support"])
 _routing: RoutingService | None = None
 _devops: DevOpsClient | None = None
 _cosmos: CosmosService | None = None
+_licensing: LicensingService | None = None
 
 # Default widget categories
 DEFAULT_CATEGORIES = [
@@ -59,6 +61,13 @@ def _get_cosmos() -> CosmosService:
     if _cosmos is None:
         _cosmos = CosmosService()
     return _cosmos
+
+
+def _get_licensing() -> LicensingService:
+    global _licensing
+    if _licensing is None:
+        _licensing = LicensingService()
+    return _licensing
 
 
 def _generate_ticket_id() -> str:
@@ -118,12 +127,33 @@ async def submit_support_request(request: SupportSubmitRequest) -> SupportSubmit
     if request.user_email:
         reporter_html = f"<h3>Reported By</h3><p>{request.user_name or ''} ({request.user_email})</p>"
 
+    license_html = ""
+    if request.license_info:
+        lic = request.license_info
+        lic_items = []
+        if lic.plan_name:
+            lic_items.append(f"<li><b>Plan:</b> {lic.plan_name}</li>")
+        if lic.status:
+            lic_items.append(f"<li><b>Status:</b> {lic.status}</li>")
+        if lic.is_free_trial:
+            end = lic.free_trial_end or "N/A"
+            lic_items.append(f"<li><b>Free Trial:</b> Yes (ends {end})</li>")
+        if lic.support_plan:
+            lic_items.append(f"<li><b>Support Plan:</b> {lic.support_plan}</li>")
+        elif lic.has_priority_support:
+            lic_items.append("<li><b>Support:</b> Priority (included in plan)</li>")
+        else:
+            lic_items.append("<li><b>Support:</b> Standard</li>")
+        if lic_items:
+            license_html = f"<h3>License &amp; Support</h3><ul>{''.join(lic_items)}</ul>"
+
     description_html = (
         f"<h3>{'Customer Report' if request.category == SupportCategory.BUG else 'Customer Feedback'}</h3>"
         f"<p>{request.description}</p>"
         f"<h3>App</h3><p>{request.app_id} (routed to {route['devops_project']})</p>"
         f"{context_html}"
         f"{reporter_html}"
+        f"{license_html}"
     )
 
     # 4. Tag prefix based on category
@@ -170,6 +200,7 @@ async def submit_support_request(request: SupportSubmitRequest) -> SupportSubmit
         user_email=request.user_email,
         user_name=request.user_name,
         context=request.context,
+        license_info=request.license_info,
         devops={
             "org": "acidni",
             "project": route["devops_project"],
@@ -251,3 +282,21 @@ async def list_user_tickets(
         }
         for t in tickets
     ]
+
+
+@router.get("/license-info")
+async def get_license_info(email: str) -> dict:
+    """Look up license and support plan information for a user.
+
+    Calls the Marketplace API subscription-lookup endpoint to retrieve
+    the user's active subscriptions, plan details, and support tier.
+
+    Query params:
+        email: User email to look up subscriptions for (required)
+
+    Returns:
+        has_license, plan_name, plan_id, status, is_free_trial,
+        free_trial_end, has_priority_support, support_plan, subscriptions
+    """
+    licensing = _get_licensing()
+    return await licensing.get_license_info(email)
