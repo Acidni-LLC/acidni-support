@@ -9,6 +9,7 @@ acidni-support v1.0.0
 """
 
 import logging
+import sys
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -18,6 +19,13 @@ from fastapi.responses import JSONResponse
 from api.config import get_settings
 
 __version__ = "1.0.0"
+
+# Configure logging to stdout so container logs capture application messages
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+)
 
 logger = logging.getLogger("acidni-support")
 

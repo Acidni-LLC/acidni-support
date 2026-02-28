@@ -14,6 +14,23 @@ from api.config import get_settings
 
 logger = logging.getLogger("acidni-support.services.licensing")
 
+
+def _normalize_keys(obj: Any) -> Any:
+    """Recursively convert dict keys to camelCase.
+
+    The marketplace API returns PascalCase keys (HasActiveSubscription,
+    Subscriptions, OfferId, etc.) but this service expects camelCase.
+    This normalises the response so dict.get() calls work correctly.
+    """
+    if isinstance(obj, dict):
+        return {
+            (k[0].lower() + k[1:] if k else k): _normalize_keys(v)
+            for k, v in obj.items()
+        }
+    if isinstance(obj, list):
+        return [_normalize_keys(item) for item in obj]
+    return obj
+
 # Map plan IDs to human-readable names (from publisher portal GetPlanDisplayName)
 PLAN_DISPLAY_NAMES: dict[str, str] = {
     "free-trial-v1-0": "Free Trial",
@@ -106,12 +123,18 @@ class LicensingService:
                 )
                 return result
 
-            data = resp.json()
+            data = _normalize_keys(resp.json())
+            logger.info(
+                "Subscription lookup for %s: status=%s keys=%s",
+                email,
+                resp.status_code,
+                list(data.keys()) if isinstance(data, dict) else type(data).__name__,
+            )
         except Exception:
             logger.exception("Failed to fetch license info for %s", email)
             return result
 
-        # Parse the SubscriptionLookupResponse
+        # Parse the SubscriptionLookupResponse (keys normalised to camelCase)
         has_active = data.get("hasActiveSubscription", False)
         subscriptions = data.get("subscriptions", [])
 
