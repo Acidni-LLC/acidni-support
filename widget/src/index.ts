@@ -100,7 +100,16 @@ class AcidniSupportWidget extends HTMLElement {
     if (name === "app-id") this.appId = value || "";
     if (name === "api-url") this.apiUrl = value || "";
     if (name === "position") this.position = value || "bottom-right";
-    if (name === "user-email") this.userEmail = value || "";
+    if (name === "user-email") {
+      const newEmail = value || "";
+      const changed = newEmail !== this.userEmail;
+      this.userEmail = newEmail;
+      // Re-fetch license info and re-render when Teams SDK provides the email
+      // after initial load (loginHint was not resolved in the URL).
+      if (changed && newEmail && this.config) {
+        this.loadConfig();
+      }
+    }
     if (name === "user-name") this.userName = value || "";
   }
 

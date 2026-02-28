@@ -71,13 +71,23 @@ async def widget_embed_page(
         app_id:     The application identifier for support ticket routing.
         user_email: Pre-populate with the user's email address.
         user_name:  Pre-populate with the user's display name.
+
+    NOTE: Teams may not resolve ``{loginHint}`` URL placeholders in static
+    tab contentUrls. This page includes the Teams JS SDK and falls back
+    to ``app.getContext()`` to obtain the user's login hint / UPN at
+    runtime when the URL parameter is missing or unresolved.
     """
+    # Detect unresolved Teams URL placeholders
+    _TEAMS_PLACEHOLDERS = {"{loginHint}", "{userPrincipalName}", "{upn}"}
+    resolved_email = user_email if user_email and user_email not in _TEAMS_PLACEHOLDERS else None
+    resolved_name = user_name if user_name and user_name not in _TEAMS_PLACEHOLDERS else None
+
     # Build optional data attributes for pre-population
     extra_attrs = ""
-    if user_email:
-        extra_attrs += f' user-email="{user_email}"'
-    if user_name:
-        extra_attrs += f' user-name="{user_name}"'
+    if resolved_email:
+        extra_attrs += f' user-email="{resolved_email}"'
+    if resolved_name:
+        extra_attrs += f' user-name="{resolved_name}"'
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -90,8 +100,35 @@ async def widget_embed_page(
     </style>
 </head>
 <body>
-    <acidni-support app-id="{app_id}" api-url="https://support.acidni.net/api" position="inline"{extra_attrs}></acidni-support>
+    <acidni-support id="support-widget" app-id="{app_id}" api-url="https://support.acidni.net/api" position="inline"{extra_attrs}></acidni-support>
     <script src="/api/widget.js"></script>
+    <script src="https://res.cdn.office.net/teams-js/2.31.1/js/MicrosoftTeams.min.js"></script>
+    <script>
+    (async function() {{
+        // If email was already resolved from URL params, nothing to do
+        var widget = document.getElementById('support-widget');
+        if (widget && widget.getAttribute('user-email')) return;
+
+        // Try Teams SDK context resolution
+        try {{
+            if (typeof microsoftTeams !== 'undefined') {{
+                await microsoftTeams.app.initialize();
+                var ctx = await microsoftTeams.app.getContext();
+                var email = (ctx.user && ctx.user.loginHint) ||
+                            (ctx.user && ctx.user.userPrincipalName) || '';
+                var name = (ctx.user && ctx.user.displayName) || '';
+                if (widget && email) {{
+                    widget.setAttribute('user-email', email);
+                }}
+                if (widget && name && !widget.getAttribute('user-name')) {{
+                    widget.setAttribute('user-name', name);
+                }}
+            }}
+        }} catch (e) {{
+            console.warn('[acidni-support] Teams SDK context unavailable:', e);
+        }}
+    }})();
+    </script>
 </body>
 </html>"""
     return HTMLResponse(content=html)
