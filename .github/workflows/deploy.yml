@@ -13,8 +13,8 @@ permissions:
   contents: read
 
 env:
-  ACR_NAME: crterprint
-  ACR_LOGIN: crterprint.azurecr.io
+  ACR_NAME: cracidnidev
+  ACR_LOGIN: cracidnidev.azurecr.io
   IMAGE_NAME: acidni-support
   CONTAINER_APP: ca-acidni-support
   RESOURCE_GROUP: rg-acidni-sdo
