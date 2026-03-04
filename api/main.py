@@ -100,9 +100,10 @@ app.add_middleware(
 # -------------------------------------------------------------------
 # Routes
 # -------------------------------------------------------------------
-from api.routes import health, support, widget
+from api.routes import health, support, widget, landing
 
 app.include_router(health.router)
+app.include_router(landing.router)  # Root landing page
 app.include_router(support.router, prefix="/api")
 app.include_router(widget.router, prefix="/api")
 

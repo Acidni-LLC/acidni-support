@@ -42,6 +42,10 @@ class Settings(BaseSettings):
     # Application Insights
     applicationinsights_connection_string: str = ""
 
+    # Zendesk
+    zendesk_web_widget_key: str = ""  # Web Widget key from Zendesk admin
+    zendesk_subdomain: str = "acidni"  # acidni.zendesk.com
+
     model_config = {
         "env_prefix": "",
         "env_file": ".env",
