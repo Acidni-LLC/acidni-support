@@ -1,4 +1,4 @@
-# acidni-support Integration Guide
+﻿# acidni-support Integration Guide
 
 Complete guide for integrating the Acidni support widget into any Acidni product.
 
@@ -37,7 +37,7 @@ Complete guide for integrating the Acidni support widget into any Acidni product
 3. Creates a **work item** (Bug or User Story) with full context
 4. Stores a ticket record in **Cosmos DB** for tracking
 
-The widget is served as a single JavaScript file that registers a `<acidni-support>` custom element. It uses Shadow DOM for style isolation — it will not conflict with your app's CSS.
+The widget is served as a single JavaScript file that registers a `<acidni-support>` custom element. It uses Shadow DOM for style isolation â€” it will not conflict with your app's CSS.
 
 ---
 
@@ -48,7 +48,7 @@ Add these two lines to any HTML page:
 ```html
 <acidni-support
   app-id="YOUR-APP-ID"
-  api-url="https://apim-terprint-dev.azure-api.net/support/api">
+  api-url="https://api.acidni.net/support/api">
 </acidni-support>
 <script src="https://support.acidni.net/api/widget.js"></script>
 ```
@@ -63,8 +63,8 @@ That's it. A support button appears in the bottom-right corner.
 
 | Attribute | Required | Default | Description |
 | --------- | -------- | ------- | ----------- |
-| `app-id` | **Yes** | — | Your product's identifier. Must match an entry in `support-routing.yaml`. |
-| `api-url` | No | `https://apim-terprint-dev.azure-api.net/support/api` | Base URL for the support API. The widget appends `/submit` and `/config/{app_id}` to this. |
+| `app-id` | **Yes** | â€” | Your product's identifier. Must match an entry in `support-routing.yaml`. |
+| `api-url` | No | `https://api.acidni.net/support/api` | Base URL for the support API. The widget appends `/submit` and `/config/{app_id}` to this. |
 | `position` | No | `bottom-right` | Where the floating action button appears. Options: `bottom-right`, `bottom-left`, `inline`. |
 
 ### Position Options
@@ -73,7 +73,7 @@ That's it. A support button appears in the bottom-right corner.
 | ----- | -------- |
 | `bottom-right` | Fixed FAB in the bottom-right corner (default) |
 | `bottom-left` | Fixed FAB in the bottom-left corner |
-| `inline` | No FAB — the support panel renders inline where the element is placed |
+| `inline` | No FAB â€” the support panel renders inline where the element is placed |
 
 ---
 
@@ -117,7 +117,7 @@ Use the `app-id` that matches your product. Each one routes to the correct Azure
 
 | app-id | Purpose |
 | ------ | ------- |
-| `acidni-support` | Self — for bugs in the support widget itself |
+| `acidni-support` | Self â€” for bugs in the support widget itself |
 | `infrastructure` | Internal infrastructure issues |
 
 > **Don't see your app?** Add a new entry to `api/config/support-routing.yaml` in the [acidni-support repo](https://github.com/Acidni-LLC/acidni-support). Any unrecognized `app-id` falls back to the `_default` route (Terprint project).
@@ -133,7 +133,7 @@ Add to your `_Host.cshtml` or `App.razor` layout:
 ```html
 <!-- At the bottom of <body>, before </body> -->
 <acidni-support app-id="terprint-web"
-  api-url="https://apim-terprint-dev.azure-api.net/support/api">
+  api-url="https://api.acidni.net/support/api">
 </acidni-support>
 <script src="https://support.acidni.net/api/widget.js"></script>
 ```
@@ -161,7 +161,7 @@ export default function SupportWidget({ appId }: { appId: string }) {
   return (
     <acidni-support
       app-id={appId}
-      api-url="https://apim-terprint-dev.azure-api.net/support/api"
+      api-url="https://api.acidni.net/support/api"
     />
   );
 }
@@ -209,9 +209,9 @@ export default function Layout({ children }) {
 <body>
   <!-- Your app content -->
 
-  <!-- Support widget — add before </body> -->
+  <!-- Support widget â€” add before </body> -->
   <acidni-support app-id="solar" position="bottom-left"
-    api-url="https://apim-terprint-dev.azure-api.net/support/api">
+    api-url="https://api.acidni.net/support/api">
   </acidni-support>
   <script src="https://support.acidni.net/api/widget.js"></script>
 </body>
@@ -244,7 +244,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
     <router-outlet></router-outlet>
     <acidni-support
       app-id="gridsight"
-      api-url="https://apim-terprint-dev.azure-api.net/support/api">
+      api-url="https://api.acidni.net/support/api">
     </acidni-support>
   `,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -283,7 +283,7 @@ Or load it in `index.html`:
     <router-view />
     <acidni-support
       app-id="mobilemech"
-      api-url="https://apim-terprint-dev.azure-api.net/support/api"
+      api-url="https://api.acidni.net/support/api"
     />
   </div>
 </template>
@@ -328,7 +328,7 @@ If your app needs to submit tickets programmatically (without the widget), call 
 
 | Channel | Base URL |
 | ------- | -------- |
-| **Through APIM** (recommended) | `https://apim-terprint-dev.azure-api.net/support/api` |
+| **Through APIM** (recommended) | `https://api.acidni.net/support/api` |
 | **Direct** | `https://support.acidni.net/api` |
 
 > APIM requires an `Ocp-Apim-Subscription-Key` header. Direct access does not.
@@ -367,17 +367,17 @@ Content-Type: application/json
 | ----- | ---- | -------- | ----------- | ----------- |
 | `app_id` | string | **Yes** | Must match routing config | Product identifier |
 | `category` | enum | **Yes** | `bug`, `feature`, `feedback`, `question` | Type of request |
-| `subject` | string | **Yes** | 5–200 chars | Brief summary |
-| `description` | string | **Yes** | 10–5000 chars | Detailed description |
-| `priority` | int | No | 1–4 (default: 3) | 1=Critical, 2=High, 3=Normal, 4=Low |
+| `subject` | string | **Yes** | 5â€“200 chars | Brief summary |
+| `description` | string | **Yes** | 10â€“5000 chars | Detailed description |
+| `priority` | int | No | 1â€“4 (default: 3) | 1=Critical, 2=High, 3=Normal, 4=Low |
 | `user_email` | string | No | Valid email | Submitter's email |
-| `user_name` | string | No | — | Submitter's name |
-| `context` | object | No | — | Auto-captured client context |
-| `context.url` | string | No | — | Current page URL |
-| `context.browser` | string | No | — | User agent string |
-| `context.os` | string | No | — | Operating system |
-| `context.screen_resolution` | string | No | — | e.g. `1920x1080` |
-| `context.app_version` | string | No | — | App version tag |
+| `user_name` | string | No | â€” | Submitter's name |
+| `context` | object | No | â€” | Auto-captured client context |
+| `context.url` | string | No | â€” | Current page URL |
+| `context.browser` | string | No | â€” | User agent string |
+| `context.os` | string | No | â€” | Operating system |
+| `context.screen_resolution` | string | No | â€” | e.g. `1920x1080` |
+| `context.app_version` | string | No | â€” | App version tag |
 | `screenshot_base64` | string | No | Max 7MB | Base64-encoded screenshot |
 
 **Response (201 Created):**
@@ -400,7 +400,7 @@ Content-Type: application/json
 | 422 | Unprocessable entity (missing required fields) |
 | 500 | Internal error (DevOps API or Cosmos failure) |
 
-### Category → Work Item Type Mapping
+### Category â†’ Work Item Type Mapping
 
 | Category | DevOps Work Item Type |
 | -------- | -------------------- |
@@ -424,10 +424,10 @@ Returns the widget configuration for a given app, including available categories
   "app_id": "terprint-web",
   "app_name": "Terprint",
   "categories": [
-    { "id": "bug", "label": "Report a Bug", "icon": "🐛", "devops_type": "Bug" },
-    { "id": "feature", "label": "Request a Feature", "icon": "💡", "devops_type": "User Story" },
-    { "id": "feedback", "label": "General Feedback", "icon": "💬", "devops_type": "User Story" },
-    { "id": "question", "label": "Ask a Question", "icon": "❓", "devops_type": "User Story" }
+    { "id": "bug", "label": "Report a Bug", "icon": "ðŸ›", "devops_type": "Bug" },
+    { "id": "feature", "label": "Request a Feature", "icon": "ðŸ’¡", "devops_type": "User Story" },
+    { "id": "feedback", "label": "General Feedback", "icon": "ðŸ’¬", "devops_type": "User Story" },
+    { "id": "question", "label": "Ask a Question", "icon": "â“", "devops_type": "User Story" }
   ],
   "fields": { "email": true, "priority": true, "screenshot": false },
   "branding": {
@@ -448,7 +448,7 @@ All paths are relative to the service root. Through APIM, prepend `/support`.
 
 | Method | Path | Description |
 | ------ | ---- | ----------- |
-| `POST` | `/api/submit` | Submit a support request → creates DevOps work item |
+| `POST` | `/api/submit` | Submit a support request â†’ creates DevOps work item |
 | `GET` | `/api/config/{app_id}` | Get widget config (categories, branding) for an app |
 | `GET` | `/api/widget.js` | Serve the compiled widget JavaScript bundle |
 | `GET` | `/api/widget.css` | Serve widget CSS (if external) |
@@ -463,8 +463,8 @@ All paths are relative to the service root. Through APIM, prepend `/support`.
 
 1. User clicks the **floating action button** (chat bubble icon)
 2. A panel opens showing **support categories** (Bug, Feature, Feedback, Question)
-3. User selects a category → a form appears with Subject, Description, Email, Priority
-4. User submits → the widget shows a **success message** with the ticket ID
+3. User selects a category â†’ a form appears with Subject, Description, Email, Priority
+4. User submits â†’ the widget shows a **success message** with the ticket ID
 5. The form closes (or resets for inline mode)
 
 ### What Gets Captured Automatically
@@ -495,7 +495,7 @@ Use `position="inline"` to embed the panel directly in your page layout instead 
 <div class="support-section">
   <h2>Need Help?</h2>
   <acidni-support app-id="terprint-web" position="inline"
-    api-url="https://apim-terprint-dev.azure-api.net/support/api">
+    api-url="https://api.acidni.net/support/api">
   </acidni-support>
 </div>
 ```
@@ -526,8 +526,8 @@ The API allows requests from these origins. If your app is hosted on a different
 
 1. Check browser console for errors
 2. Verify the script loaded: `document.querySelector('acidni-support')` should return an element
-3. Verify `app-id` is set — the widget won't render without it
-4. Check network tab for `widget.js` request — should return 200
+3. Verify `app-id` is set â€” the widget won't render without it
+4. Check network tab for `widget.js` request â€” should return 200
 
 ### "Failed to load config" warning in console
 
@@ -537,7 +537,7 @@ The API allows requests from these origins. If your app is hosted on a different
 
 ### Ticket submitted but no work item created
 
-- Check the API response — if `devops_work_item_id` is present, it was created
+- Check the API response â€” if `devops_work_item_id` is present, it was created
 - Verify the DevOps project in `support-routing.yaml` exists
 - Check API logs: `az containerapp logs show --name ca-acidni-support --resource-group rg-dev-terprint-ca --tail 50`
 
@@ -570,7 +570,7 @@ To add support for a new Acidni product:
 
    ```html
    <acidni-support app-id="my-new-app"
-     api-url="https://apim-terprint-dev.azure-api.net/support/api">
+     api-url="https://api.acidni.net/support/api">
    </acidni-support>
    <script src="https://support.acidni.net/api/widget.js"></script>
    ```

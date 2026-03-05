@@ -1,16 +1,16 @@
-/**
- * acidni-support-widget — Embeddable support web component.
+﻿/**
+ * acidni-support-widget â€” Embeddable support web component.
  *
  * Usage:
- *   <acidni-support app-id="terprint-web" api-url="https://apim-terprint-dev.azure-api.net/support/api"></acidni-support>
+ *   <acidni-support app-id="terprint-web" api-url="https://api.acidni.net/support/api"></acidni-support>
  *   <script src="https://support.acidni.net/api/widget.js"></script>
  *
  * Attributes:
- *   app-id      — CMDB app identifier for routing
- *   api-url     — Base URL for the support API
- *   position    — "bottom-right" | "bottom-left" | "inline"
- *   user-email  — Pre-populate the email field
- *   user-name   — Pre-populate the name / greeting
+ *   app-id      â€” CMDB app identifier for routing
+ *   api-url     â€” Base URL for the support API
+ *   position    â€” "bottom-right" | "bottom-left" | "inline"
+ *   user-email  â€” Pre-populate the email field
+ *   user-name   â€” Pre-populate the name / greeting
  *
  * See docs/integration-guide.md for full integration documentation.
  */
@@ -84,7 +84,7 @@ class AcidniSupportWidget extends HTMLElement {
     this.appId = this.getAttribute("app-id") || "";
     this.apiUrl =
       this.getAttribute("api-url") ||
-      "https://apim-terprint-dev.azure-api.net/support/api";
+      "https://api.acidni.net/support/api";
     this.position = this.getAttribute("position") || "bottom-right";
     this.userEmail = this.getAttribute("user-email") || "";
     this.userName = this.getAttribute("user-name") || "";
@@ -197,7 +197,7 @@ class AcidniSupportWidget extends HTMLElement {
       const lic = this.licenseInfo;
       if (lic.has_license && lic.plan_name) {
         const trialTag = lic.is_free_trial ? ' <span class="badge trial">Trial</span>' : "";
-        licenseBadge = `<span class="license-badge active">📄 ${this.escapeHtml(lic.plan_name)}${trialTag}</span>`;
+        licenseBadge = `<span class="license-badge active">ðŸ“„ ${this.escapeHtml(lic.plan_name)}${trialTag}</span>`;
       } else {
         licenseBadge = '<span class="license-badge none">No active license</span>';
       }
@@ -207,9 +207,9 @@ class AcidniSupportWidget extends HTMLElement {
     if (this.licenseInfo) {
       const lic = this.licenseInfo;
       if (lic.support_plan) {
-        supportBadge = `<span class="support-badge priority">⭐ ${this.escapeHtml(lic.support_plan)}</span>`;
+        supportBadge = `<span class="support-badge priority">â­ ${this.escapeHtml(lic.support_plan)}</span>`;
       } else if (lic.has_priority_support) {
-        supportBadge = '<span class="support-badge priority">⭐ Priority Support</span>';
+        supportBadge = '<span class="support-badge priority">â­ Priority Support</span>';
       } else if (lic.has_license) {
         supportBadge = '<span class="support-badge standard">Standard Support</span>';
       }
@@ -230,7 +230,7 @@ class AcidniSupportWidget extends HTMLElement {
     container.innerHTML = `
       <div class="home-view">
         <div class="context-bar">
-          <span class="context-app">📱 ${appName}</span>
+          <span class="context-app">ðŸ“± ${appName}</span>
           ${greeting ? `<span class="context-user">${greeting}</span>` : ""}
         </div>
         ${licenseBadge || supportBadge ? `<div class="license-bar">${licenseBadge}${supportBadge}</div>` : ""}
@@ -238,7 +238,7 @@ class AcidniSupportWidget extends HTMLElement {
           ${catButtons}
         </div>
         <div class="past-requests-link">
-          <button class="link-btn" id="view-requests-btn">📋 View my past requests</button>
+          <button class="link-btn" id="view-requests-btn">ðŸ“‹ View my past requests</button>
         </div>
       </div>
     `;
@@ -270,7 +270,7 @@ class AcidniSupportWidget extends HTMLElement {
         : this.licenseInfo.has_priority_support
           ? "Priority Support"
           : "Standard Support";
-      formLicenseHtml = `<div class="license-bar compact"><span class="license-badge active">📄 ${planLabel}</span><span class="support-badge ${this.licenseInfo.has_priority_support ? 'priority' : 'standard'}">${supportLabel}</span></div>`;
+      formLicenseHtml = `<div class="license-bar compact"><span class="license-badge active">ðŸ“„ ${planLabel}</span><span class="support-badge ${this.licenseInfo.has_priority_support ? 'priority' : 'standard'}">${supportLabel}</span></div>`;
     }
 
     body.innerHTML = `
@@ -278,7 +278,7 @@ class AcidniSupportWidget extends HTMLElement {
         <input type="hidden" name="category" value="${categoryId}" />
 
         <div class="context-bar">
-          <span class="context-app">📱 ${this.config?.app_name || this.appId}</span>
+          <span class="context-app">ðŸ“± ${this.config?.app_name || this.appId}</span>
           <span class="context-cat">${catLabel}</span>
         </div>
         ${formLicenseHtml}
@@ -307,7 +307,7 @@ class AcidniSupportWidget extends HTMLElement {
           </select>
         </div>
         <div class="actions">
-          <button type="button" class="btn-back" id="back-btn">← Back</button>
+          <button type="button" class="btn-back" id="back-btn">â† Back</button>
           <button type="submit" class="btn-submit">Submit</button>
         </div>
         <div id="form-status" class="form-status"></div>
@@ -456,7 +456,7 @@ class AcidniSupportWidget extends HTMLElement {
 
     body.innerHTML = `
       <div class="success">
-        <div class="success-icon">✅</div>
+        <div class="success-icon">âœ…</div>
         <h3>Submitted!</h3>
         <p>${result.message}</p>
         <p class="ticket-id">Ticket: <strong>${result.ticket_id}</strong></p>
@@ -481,7 +481,7 @@ class AcidniSupportWidget extends HTMLElement {
     body.innerHTML = `
       <div class="past-requests">
         <div class="section-header">
-          <button class="btn-back" id="back-btn">← Back</button>
+          <button class="btn-back" id="back-btn">â† Back</button>
           <span class="section-title">My Requests</span>
         </div>
         <div id="tickets-list" class="tickets-list">
@@ -519,10 +519,10 @@ class AcidniSupportWidget extends HTMLElement {
     }
 
     const statusIcons: Record<string, string> = {
-      created: "🟡",
-      "in-progress": "🔵",
-      resolved: "🟢",
-      closed: "⚫",
+      created: "ðŸŸ¡",
+      "in-progress": "ðŸ”µ",
+      resolved: "ðŸŸ¢",
+      closed: "âš«",
     };
 
     const priorityLabels: Record<number, string> = {
@@ -534,7 +534,7 @@ class AcidniSupportWidget extends HTMLElement {
 
     list.innerHTML = tickets
       .map((t) => {
-        const icon = statusIcons[t.status] || "⚪";
+        const icon = statusIcons[t.status] || "âšª";
         const date = t.created_at
           ? new Date(t.created_at).toLocaleDateString()
           : "";

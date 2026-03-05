@@ -1,4 +1,4 @@
-# acidni-support
+﻿# acidni-support
 
 Unified support and feedback module for all Acidni LLC products. Provides an embeddable web component widget that collects support requests and routes them to the correct Azure DevOps project.
 
@@ -7,15 +7,15 @@ Unified support and feedback module for all Acidni LLC products. Provides an emb
 ## Architecture
 
 ```
-┌─────────────────┐     ┌─────────────────────────┐     ┌──────────────┐
-│  Widget (JS)    │ ──▶ │  acidni-support API      │ ──▶ │ Azure DevOps │
-│  Web Component  │     │  FastAPI + Python 3.12    │     │ Work Items   │
-│  Shadow DOM     │     │  Container App            │     └──────────────┘
-└─────────────────┘     │                           │     ┌──────────────┐
-                        │  POST /api/submit         │ ──▶ │ Cosmos DB    │
-                        │  GET  /api/config/:id     │     │ Ticket Store │
-                        │  GET  /api/widget.js      │     └──────────────┘
-                        └─────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  Widget (JS)    â”‚ â”€â”€â–¶ â”‚  acidni-support API      â”‚ â”€â”€â–¶ â”‚ Azure DevOps â”‚
+â”‚  Web Component  â”‚     â”‚  FastAPI + Python 3.12    â”‚     â”‚ Work Items   â”‚
+â”‚  Shadow DOM     â”‚     â”‚  Container App            â”‚     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     â”‚                           â”‚     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+                        â”‚  POST /api/submit         â”‚ â”€â”€â–¶ â”‚ Cosmos DB    â”‚
+                        â”‚  GET  /api/config/:id     â”‚     â”‚ Ticket Store â”‚
+                        â”‚  GET  /api/widget.js      â”‚     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                        â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ## Quick Start
@@ -25,7 +25,7 @@ Unified support and feedback module for all Acidni LLC products. Provides an emb
 ```html
 <acidni-support
   app-id="terprint-web"
-  api-url="https://apim-terprint-dev.azure-api.net/support/api">
+  api-url="https://api.acidni.net/support/api">
 </acidni-support>
 <script src="https://support.acidni.net/api/widget.js"></script>
 ```
@@ -57,7 +57,7 @@ uvicorn api.main:app --reload --port 8000
 ```html
 <script src="https://support.acidni.net/api/widget.js"></script>
 <acidni-support app-id="terprint-web"
-  api-url="https://apim-terprint-dev.azure-api.net/support/api">
+  api-url="https://api.acidni.net/support/api">
 </acidni-support>
 ```
 
@@ -71,7 +71,7 @@ useEffect(() => {
 return (
   <acidni-support
     app-id="gridsight"
-    api-url="https://apim-terprint-dev.azure-api.net/support/api"
+    api-url="https://api.acidni.net/support/api"
   />
 );
 ```
@@ -79,7 +79,7 @@ return (
 **Static HTML**
 ```html
 <acidni-support app-id="solar" position="bottom-left"
-  api-url="https://apim-terprint-dev.azure-api.net/support/api">
+  api-url="https://api.acidni.net/support/api">
 </acidni-support>
 <script src="https://support.acidni.net/api/widget.js"></script>
 ```
@@ -106,31 +106,31 @@ All API paths are relative to the base URL. Through APIM prefix `/support`:
 
 ```
 acidni-support/
-├── api/
-│   ├── main.py                    # FastAPI application
-│   ├── config.py                  # Settings (pydantic-settings)
-│   ├── models.py                  # Pydantic models
-│   ├── routes/
-│   │   ├── health.py              # Health check
-│   │   ├── support.py             # Submit/config endpoints
-│   │   └── widget.py              # Widget serving
-│   ├── services/
-│   │   ├── routing_service.py     # App→DevOps routing
-│   │   ├── devops_client.py       # Azure DevOps API
-│   │   ├── cosmos_service.py      # Cosmos DB storage
-│   │   └── notification_service.py
-│   └── config/
-│       └── support-routing.yaml   # App→project mapping
-├── widget/
-│   ├── src/
-│   │   ├── index.ts               # Web component
-│   │   └── styles.ts              # Shadow DOM CSS
-│   ├── package.json
-│   ├── rollup.config.mjs
-│   └── tsconfig.json
-├── Dockerfile
-├── pyproject.toml
-└── .github/workflows/deploy.yml
+â”œâ”€â”€ api/
+â”‚   â”œâ”€â”€ main.py                    # FastAPI application
+â”‚   â”œâ”€â”€ config.py                  # Settings (pydantic-settings)
+â”‚   â”œâ”€â”€ models.py                  # Pydantic models
+â”‚   â”œâ”€â”€ routes/
+â”‚   â”‚   â”œâ”€â”€ health.py              # Health check
+â”‚   â”‚   â”œâ”€â”€ support.py             # Submit/config endpoints
+â”‚   â”‚   â””â”€â”€ widget.py              # Widget serving
+â”‚   â”œâ”€â”€ services/
+â”‚   â”‚   â”œâ”€â”€ routing_service.py     # Appâ†’DevOps routing
+â”‚   â”‚   â”œâ”€â”€ devops_client.py       # Azure DevOps API
+â”‚   â”‚   â”œâ”€â”€ cosmos_service.py      # Cosmos DB storage
+â”‚   â”‚   â””â”€â”€ notification_service.py
+â”‚   â””â”€â”€ config/
+â”‚       â””â”€â”€ support-routing.yaml   # Appâ†’project mapping
+â”œâ”€â”€ widget/
+â”‚   â”œâ”€â”€ src/
+â”‚   â”‚   â”œâ”€â”€ index.ts               # Web component
+â”‚   â”‚   â””â”€â”€ styles.ts              # Shadow DOM CSS
+â”‚   â”œâ”€â”€ package.json
+â”‚   â”œâ”€â”€ rollup.config.mjs
+â”‚   â””â”€â”€ tsconfig.json
+â”œâ”€â”€ Dockerfile
+â”œâ”€â”€ pyproject.toml
+â””â”€â”€ .github/workflows/deploy.yml
 ```
 
 ## Infrastructure

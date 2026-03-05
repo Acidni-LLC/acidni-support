@@ -1,4 +1,4 @@
-"""
+﻿"""
 Configuration management for acidni-support.
 
 Loads settings from environment variables and Azure Key Vault.
@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     keyvault_url: str = "https://kv-terprint-dev.vault.azure.net"
 
     # APIM
-    apim_base_url: str = "https://apim-terprint-dev.azure-api.net"
+    apim_base_url: str = "https://api.acidni.net"
     apim_subscription_key: str = ""  # Ocp-Apim-Subscription-Key for marketplace API calls
 
     # Notifications
