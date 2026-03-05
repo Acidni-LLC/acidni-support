@@ -116,10 +116,13 @@ class LicensingService:
                 )
 
             if resp.status_code != 200:
-                logger.warning(
-                    "Subscription lookup failed for %s: HTTP %s",
+                logger.error(
+                    "[LicensingError] Subscription lookup failed for %s: HTTP %s. "
+                    "Product=%s, ErrorType=%s",
                     email,
                     resp.status_code,
+                    "acidni-support",
+                    "ApiHttpError",
                 )
                 return result
 
@@ -131,7 +134,13 @@ class LicensingService:
                 list(data.keys()) if isinstance(data, dict) else type(data).__name__,
             )
         except Exception:
-            logger.exception("Failed to fetch license info for %s", email)
+            logger.exception(
+                "[LicensingError] Failed to fetch license info for %s. "
+                "Product=%s, ErrorType=%s",
+                email,
+                "acidni-support",
+                "ApiException",
+            )
             return result
 
         # Parse the SubscriptionLookupResponse (keys normalised to camelCase)
