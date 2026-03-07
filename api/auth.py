@@ -40,11 +40,13 @@ async def require_api_key(
         logger.warning("SUPPORT_API_KEY not configured — skipping auth check")
         return ""
 
-    provided = ocp_apim_subscription_key or x_api_key
+    # Prefer X-Api-Key (set by APIM policy with the backend secret) over
+    # Ocp-Apim-Subscription-Key (APIM gateway subscription key — different value).
+    provided = x_api_key or ocp_apim_subscription_key
     if not provided:
         raise HTTPException(
             status_code=401,
-            detail="Missing API key. Provide Ocp-Apim-Subscription-Key or X-Api-Key header.",
+            detail="Missing API key. Provide X-Api-Key header.",
         )
 
     if not hmac.compare_digest(provided, expected):
