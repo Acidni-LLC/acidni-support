@@ -100,7 +100,7 @@ async def widget_embed_page(
     </style>
 </head>
 <body>
-    <acidni-support id="support-widget" app-id="{app_id}" api-url="https://support.acidni.net/api" position="inline"{extra_attrs}></acidni-support>
+    <acidni-support id="support-widget" app-id="{app_id}" api-url="https://api.acidni.net/support/api" position="inline"{extra_attrs}></acidni-support>
     <script src="/api/widget.js"></script>
     <script src="https://res.cdn.office.net/teams-js/2.31.1/js/MicrosoftTeams.min.js"></script>
     <script>

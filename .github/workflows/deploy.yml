@@ -17,7 +17,7 @@ env:
   ACR_LOGIN: cracidnidev.azurecr.io
   IMAGE_NAME: acidni-support
   CONTAINER_APP: ca-acidni-support
-  RESOURCE_GROUP: rg-acidni-sdo
+  RESOURCE_GROUP: rg-dev-acidni-shared
   AZURE_SUBSCRIPTION: bb40fccf-9ffa-4bad-b9c0-ea40e326882c
 
 jobs:

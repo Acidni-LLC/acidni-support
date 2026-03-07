@@ -5,8 +5,9 @@ Support routes — submit requests, get config, list tickets.
 import logging
 from datetime import datetime
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
+from api.auth import require_api_key
 from api.config import get_settings
 from api.models import (
     SupportCategory,
@@ -24,7 +25,7 @@ from api.services.routing_service import RoutingService
 
 logger = logging.getLogger("acidni-support.routes.support")
 
-router = APIRouter(tags=["support"])
+router = APIRouter(tags=["support"], dependencies=[Depends(require_api_key)])
 
 # Lazy-init singletons
 _routing: RoutingService | None = None

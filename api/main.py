@@ -68,6 +68,18 @@ async def lifespan(app: FastAPI):
             logger.info("Loaded DevOps PAT from Key Vault")
         else:
             logger.warning("DevOps PAT not found in Key Vault")
+
+        # Load API key for header-level authentication
+        try:
+            api_key = kv_client.get_secret("apim-support-subscription-key").value
+            if api_key:
+                settings.support_api_key = api_key
+                logger.info("Loaded support API key from Key Vault")
+            else:
+                logger.warning("Support API key not found in Key Vault")
+        except Exception as e:
+            logger.warning("Could not load support API key from Key Vault: %s", e)
+
     except Exception as e:
         logger.warning("Could not load secrets from Key Vault: %s", e)
     yield
@@ -115,7 +127,7 @@ app.add_middleware(
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type", "Ocp-Apim-Subscription-Key", "X-User-Email", "X-App-Id"],
+    allow_headers=["Content-Type", "Ocp-Apim-Subscription-Key", "X-Api-Key", "X-User-Email", "X-App-Id"],
 )
 
 # RFC 7807 Problem Details error handlers
