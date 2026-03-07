@@ -35,7 +35,11 @@ jobs:
           subscription-id: ${{ env.AZURE_SUBSCRIPTION }}
 
       - name: Login to ACR
-        run: az acr login --name ${{ env.ACR_NAME }}
+        run: |
+          echo "${{ secrets.AZURE_REGISTRY_PASSWORD }}" | \
+            docker login ${{ env.ACR_LOGIN }} \
+              --username "${{ secrets.AZURE_REGISTRY_USERNAME }}" \
+              --password-stdin
 
       - name: Build image tag
         id: tag
