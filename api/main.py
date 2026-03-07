@@ -37,6 +37,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from api.config import get_settings
+from api.problem_details import register_problem_handlers
 
 __version__ = "1.0.0"
 
@@ -117,6 +118,9 @@ app.add_middleware(
     allow_headers=["Content-Type", "Ocp-Apim-Subscription-Key", "X-User-Email", "X-App-Id"],
 )
 
+# RFC 7807 Problem Details error handlers
+register_problem_handlers(app, app_name="acidni-support")
+
 # -------------------------------------------------------------------
 # Routes
 # -------------------------------------------------------------------
@@ -127,8 +131,3 @@ app.include_router(landing.router)  # Root landing page
 app.include_router(support.router, prefix="/api")
 app.include_router(widget.router, prefix="/api")
 
-
-@app.exception_handler(Exception)
-async def global_exception_handler(request, exc):
-    logger.exception("Unhandled exception: %s", exc)
-    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
