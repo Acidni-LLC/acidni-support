@@ -7,8 +7,7 @@
  *
  * Attributes:
  *   app-id      â€” CMDB app identifier for routing
- *   api-url     â€” Base URL for the support API
- *   position    â€” "bottom-right" | "bottom-left" | "inline"
+ *   api-url     â€” Base URL for the support API *   api-key     â€" Optional APIM subscription key for authenticated access *   position    â€” "bottom-right" | "bottom-left" | "inline"
  *   user-email  â€” Pre-populate the email field
  *   user-name   â€” Pre-populate the name / greeting
  *
@@ -70,9 +69,10 @@ class AcidniSupportWidget extends HTMLElement {
   private position = "bottom-right";
   private userEmail = "";
   private userName = "";
+  private apiKey = "";
 
   static get observedAttributes(): string[] {
-    return ["app-id", "api-url", "position", "user-email", "user-name"];
+    return ["app-id", "api-url", "position", "user-email", "user-name", "api-key"];
   }
 
   constructor() {
@@ -88,6 +88,7 @@ class AcidniSupportWidget extends HTMLElement {
     this.position = this.getAttribute("position") || "bottom-right";
     this.userEmail = this.getAttribute("user-email") || "";
     this.userName = this.getAttribute("user-name") || "";
+    this.apiKey = this.getAttribute("api-key") || "";
     this.render();
     this.loadConfig();
   }
@@ -111,15 +112,22 @@ class AcidniSupportWidget extends HTMLElement {
       }
     }
     if (name === "user-name") this.userName = value || "";
+    if (name === "api-key") this.apiKey = value || "";
+  }
+
+  private getHeaders(extra?: Record<string, string>): Record<string, string> {
+    const headers: Record<string, string> = { ...extra };
+    if (this.apiKey) headers["Ocp-Apim-Subscription-Key"] = this.apiKey;
+    return headers;
   }
 
   private async loadConfig(): Promise<void> {
     if (!this.appId) return;
     try {
       // Fetch config and license info in parallel
-      const configPromise = fetch(`${this.apiUrl}/config/${this.appId}`);
+      const configPromise = fetch(`${this.apiUrl}/config/${this.appId}`, { headers: this.getHeaders() });
       const licensePromise = this.userEmail
-        ? fetch(`${this.apiUrl}/license-info?email=${encodeURIComponent(this.userEmail)}`)
+        ? fetch(`${this.apiUrl}/license-info?email=${encodeURIComponent(this.userEmail)}`, { headers: this.getHeaders() })
         : Promise.resolve(null);
 
       const [configRes, licenseRes] = await Promise.all([configPromise, licensePromise]);
@@ -409,7 +417,7 @@ class AcidniSupportWidget extends HTMLElement {
     try {
       const res = await fetch(`${this.apiUrl}/submit`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: this.getHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify(payload),
       });
 
@@ -500,7 +508,7 @@ class AcidniSupportWidget extends HTMLElement {
       if (this.userEmail) params.set("email", this.userEmail);
       params.set("limit", "25");
 
-      const res = await fetch(`${this.apiUrl}/tickets?${params.toString()}`);
+      const res = await fetch(`${this.apiUrl}/tickets?${params.toString()}`, { headers: this.getHeaders() });
       const tickets: TicketSummary[] = res.ok ? await res.json() : [];
       this.renderTicketList(tickets);
     } catch (e) {
