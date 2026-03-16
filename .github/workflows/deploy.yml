@@ -59,6 +59,7 @@ jobs:
           az containerapp update \
             --name ${{ env.CONTAINER_APP }} \
             --resource-group ${{ env.RESOURCE_GROUP }} \
+            --subscription ${{ env.AZURE_SUBSCRIPTION }} \
             --image ${{ steps.tag.outputs.full_image }}
 
       - name: Verify health
