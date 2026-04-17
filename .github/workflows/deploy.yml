@@ -13,12 +13,12 @@ permissions:
   contents: read
 
 env:
-  ACR_NAME: cracidnidev
-  ACR_LOGIN: cracidnidev.azurecr.io
+  ACR_NAME: cracidnishared
+  ACR_LOGIN: cracidnishared.azurecr.io
   IMAGE_NAME: acidni-support
   CONTAINER_APP: ca-acidni-support
   RESOURCE_GROUP: rg-dev-acidni-shared
-  AZURE_SUBSCRIPTION: bb40fccf-9ffa-4bad-b9c0-ea40e326882c
+  AZURE_SUBSCRIPTION: 4492e3a6-11b3-4a01-99d2-75c3b7e17577
 
 jobs:
   build-deploy:
@@ -30,16 +30,10 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ env.AZURE_SUBSCRIPTION }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Login to ACR
-        run: |
-          echo "${{ secrets.AZURE_REGISTRY_PASSWORD }}" | \
-            docker login ${{ env.ACR_LOGIN }} \
-              --username "${{ secrets.AZURE_REGISTRY_USERNAME }}" \
-              --password-stdin
+        run: az acr login --name ${{ env.ACR_NAME }}
 
       - name: Build image tag
         id: tag
