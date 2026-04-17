@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     cosmos_database: str = "support-dev"
 
     # Key Vault
-    keyvault_url: str = "https://kv-terprint-dev.vault.azure.net"
+    keyvault_url: str = "https://kv-acidni-dev.vault.azure.net"
 
     # APIM
     apim_base_url: str = "https://api.acidni.net"
