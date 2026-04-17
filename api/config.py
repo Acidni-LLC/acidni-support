@@ -25,14 +25,14 @@ class Settings(BaseSettings):
     devops_pat: str = ""  # Loaded from Key Vault at startup
 
     # Cosmos DB
-    cosmos_endpoint: str = "https://acidni-cosmos-dev.documents.azure.com:443/"
+    cosmos_endpoint: str = "https://cosmos-acidni-dev.documents.azure.com:443/"
     cosmos_database: str = "support-dev"
 
     # Key Vault
     keyvault_url: str = "https://kv-acidni-dev.vault.azure.net"
 
     # APIM
-    apim_base_url: str = "https://api.acidni.net"
+    apim_base_url: str = "https://apim-acidni-dev.azure-api.net"
     apim_subscription_key: str = ""  # Ocp-Apim-Subscription-Key for marketplace API calls
 
     # Notifications
