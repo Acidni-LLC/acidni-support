@@ -59,8 +59,9 @@ jobs:
       - name: Verify health
         run: |
           sleep 15
+          # Use container app FQDN (custom domain may not resolve from GH runners)
           HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-            https://support.acidni.net/health)
+            https://ca-acidni-support.mangograss-1e4cf20f.eastus2.azurecontainerapps.io/health)
           echo "Health check: HTTP $HTTP_CODE"
           if [ "$HTTP_CODE" != "200" ]; then
             echo "::warning::Health check returned $HTTP_CODE"
