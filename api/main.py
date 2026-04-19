@@ -62,7 +62,7 @@ async def lifespan(app: FastAPI):
 
         credential = DefaultAzureCredential()
         kv_client = SecretClient(vault_url=settings.keyvault_url, credential=credential)
-        pat = kv_client.get_secret("azure-devops-pat").value
+        pat = kv_client.get_secret("devops-pat").value
         if pat:
             settings.devops_pat = pat
             logger.info("Loaded DevOps PAT from Key Vault")
